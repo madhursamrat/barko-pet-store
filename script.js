@@ -28,11 +28,17 @@ function initNavbar() {
 
   // Mobile toggle
   if (toggle) {
+    toggle.setAttribute('aria-controls', 'navMenu');
+    const setExpanded = (open) => toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    setExpanded(false);
+
     toggle.addEventListener('click', () => {
+      const opening = !menu.classList.contains('open');
       toggle.classList.toggle('open');
       menu.classList.toggle('open');
       if (overlay) overlay.classList.toggle('active');
       document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+      setExpanded(opening);
     });
   }
 
@@ -40,10 +46,11 @@ function initNavbar() {
   links.forEach(link => {
     link.addEventListener('click', () => {
       if (menu.classList.contains('open')) {
-        toggle.classList.remove('open');
+        if (toggle) toggle.classList.remove('open');
         menu.classList.remove('open');
         if (overlay) overlay.classList.remove('active');
         document.body.style.overflow = '';
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
       }
     });
   });
@@ -55,14 +62,19 @@ function initNavbar() {
       menu.classList.remove('open');
       overlay.classList.remove('active');
       document.body.style.overflow = '';
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
     });
   }
 
   // Set active nav link
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const normalizedCurrent = currentPage === '' ? 'index.html' : currentPage;
+
   links.forEach(link => {
     const href = link.getAttribute('href');
-    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+    if (!href) return;
+    const linkPage = href.split('/').pop();
+    if (linkPage === normalizedCurrent || (normalizedCurrent === 'index.html' && href === 'index.html')) {
       link.classList.add('active');
     }
   });

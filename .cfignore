@@ -1,0 +1,12 @@
+BarkoApp/
+.git/
+.github/
+.wrangler/
+.claude/
+node_modules/
+*.zip
+*.xlsx
+*.py
+deploy.js
+compress_images.py
+barko-new-pages/
